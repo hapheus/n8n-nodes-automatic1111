@@ -1,19 +1,26 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-automatic1111",
   "version": "0.1.0",
-  "description": "",
+  "description": "Enables image generation from text descriptions by integrating the Automatic1111 API (Stable Diffusion) into n8n workflows.",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "n8n",
+    "n8n-nodes",
+    "automatic1111",
+    "stable-diffusion",
+    "text-to-image",
+    "ai-image-creation",
+    "workflow-automation"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Franz Haberfellner",
+    "email": "haf68k@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/hapheus/n8n-nodes-automatic1111.git"
   },
   "main": "index.js",
   "scripts": {
@@ -30,12 +37,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/Automatic1111CredentialsApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/Automatic1111Node/Automatic1111Node.node.js"
     ]
   },
   "devDependencies": {
