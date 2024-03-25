@@ -8,6 +8,7 @@ import {
 export class Automatic1111CredentialsApi implements ICredentialType {
 	name = 'automatic1111CredentialsApi';
 	displayName = 'Automatc1111 Credentials API';
+	icon = 'file:20920490.png';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Host',
@@ -20,12 +21,15 @@ export class Automatic1111CredentialsApi implements ICredentialType {
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
+			headers: {
+				Accept: 'application/json',
+			},
 		},
 	};
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{ $credentials.host }}',
+			baseURL: '={{$credentials?.host}}',
 			url: '/sdapi/v1/sd-models',
 		},
 	};
