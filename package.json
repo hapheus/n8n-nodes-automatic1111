@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-stable-diffusion-api",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Enables image generation from text descriptions by integrating the Automatic1111 API (Stable Diffusion) into n8n workflows.",
   "keywords": [
     "n8n-community-node-package",

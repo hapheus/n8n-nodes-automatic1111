@@ -11,11 +11,12 @@ Automatic1111 is a web UI for Stable Diffusion, enabling users to generate image
 [Credentials](#credentials)  
 [Usage](#usage)  
 [Resources](#resources)  
-[Version history](#version-history)
 
 ## Installation
 
 Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+
+
 
 ## Operations
 
@@ -37,7 +38,3 @@ For users new to n8n or those who need a refresher, you can start with the [Try 
 
 * [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
 * [Automatic1111 documentation](https://github.com/Automatic1111/stable-diffusion-webui)
-
-## Version history
-
-Version 0.1.0: Initial release, featuring the ability to generate images from text descriptions using the Automatic1111 API.
