@@ -33,10 +33,20 @@ export class Automatic1111Node implements INodeType {
 				type: 'options',
 				description: 'Choose from the list. Choose from the list, or specify an model using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 				default: '',
-				placeholder: 'Model',
 				required: true,
 				typeOptions: {
 					loadOptionsMethod: 'loadModels',
+				},
+			},
+			{
+				displayName: 'Sampler Method Name or ID',
+				name: 'sampler',
+				type: 'options',
+				description: 'Choose from the list. Choose from the list, or specify an sampler using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
+				default: '',
+				required: true,
+				typeOptions: {
+					loadOptionsMethod: 'loadSamplers',
 				},
 			},
 			{
@@ -122,6 +132,30 @@ export class Automatic1111Node implements INodeType {
 
 				return returnData;
 			},
+			async loadSamplers(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const returnData: INodePropertyOptions[] = [];
+
+				let credentials;
+				try {
+					credentials = await this.getCredentials('automatic1111CredentialsApi');
+				} catch (e) {
+					return [];
+				}
+
+				const samplers = await this.helpers.requestWithAuthentication.call(this, 'automatic1111CredentialsApi', {
+					method: 'GET',
+					uri: credentials.host + '/sdapi/v1/samplers',
+					json: true,
+				});
+				for (const sampler of samplers) {
+					returnData.push({
+						name: sampler.name,
+						value: sampler.name
+					});
+				}
+
+				return returnData;
+			},
 		},
 	};
 
@@ -131,6 +165,7 @@ export class Automatic1111Node implements INodeType {
 		const credentials = await this.getCredentials('automatic1111CredentialsApi');
 		let item: INodeExecutionData;
 		let model: string;
+		let sampler: string;
 		let prompt: string;
 		let negative_prompt: string;
 		let width: number;
@@ -142,6 +177,7 @@ export class Automatic1111Node implements INodeType {
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
 				model = this.getNodeParameter('model', itemIndex) as string;
+				sampler = this.getNodeParameter('sampler', itemIndex) as string;
 				prompt = this.getNodeParameter('prompt', itemIndex) as string;
 				negative_prompt = this.getNodeParameter('negative_prompt', itemIndex) as string;
 				width = this.getNodeParameter('width', itemIndex) as number;
@@ -159,7 +195,7 @@ export class Automatic1111Node implements INodeType {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({"sd_model_checkpoint": model}),
+					body: JSON.stringify({'sd_model_checkpoint': model}),
 				});
 
 				const response = await this.helpers.requestWithAuthentication.call(this, 'automatic1111CredentialsApi', {
@@ -167,24 +203,25 @@ export class Automatic1111Node implements INodeType {
 					uri: credentials.host + '/sdapi/v1/txt2img',
 					json: true,
 					headers: {
-						"Content-Type": "application/json",
+						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						"prompt": prompt,
-						"negative_prompt": negative_prompt,
-						"steps": steps,
-						"cfg_scale": cfg_scale,
-						"width": width,
-						"height": height,
-						"seed": seed
+						'sampler_name': sampler,
+						'prompt': prompt,
+						'negative_prompt': negative_prompt,
+						'steps': steps,
+						'cfg_scale': cfg_scale,
+						'width': width,
+						'height': height,
+						'seed': seed
 					}),
 				});
 
 				const binaryData = await this.helpers.prepareBinaryData(Buffer.from(response.images[0], 'base64'));
-				binaryData.mimeType = "image/jpg";
-				binaryData.fileExtension = "jpg";
-				binaryData.fileType = "image";
-				binaryData.fileName = "image.jpg";
+				binaryData.mimeType = 'image/jpg';
+				binaryData.fileExtension = 'jpg';
+				binaryData.fileType = 'image';
+				binaryData.fileName = 'image.jpg';
 
 				item.binary = {
 					data: binaryData
